@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ShipMovement : MonoBehaviour
 {
-    public float speed = 100;
-    public float maxSpeed = 100;
-    public float minSpeed = 5;
+    public float speed = 120;
+    public float maxSpeed = 200;
+    public float minSpeed = 50;
     public float rootSpeed1 = 20;
     public float rootSpeed2 = 20;
 
