@@ -11,19 +11,20 @@ public class WayPoints : MonoBehaviour
     private Transform[] waypoints;
 
     [SerializeField]
-    private float speed;
+    private float speed = 2.0f;
 
-    private int currentWaypoint;
+    private int currentWaypoint = 0;
 
     void Update()
     {
-        if(transform.position != waypoints[currentWaypoint].position)
+        if (waypoints.Length == 0)
+            return;
+
+        transform.position = Vector3.Lerp(transform.position, waypoints[currentWaypoint].position, Time.deltaTime * speed);
+
+        if (Vector3.Distance(transform.position, waypoints[currentWaypoint].position) < 0.1f)
         {
-            transform.position = Vector2.MoveTowards(transform.position, waypoints[currentWaypoint].position, speed * Time.deltaTime);
-        }
-        else
-        {
-            currentWaypoint++;
+            currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
         }
     }
 }
