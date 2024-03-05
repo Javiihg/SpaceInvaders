@@ -13,7 +13,7 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<Player>().transform;
+        player = FindObjectOfType<ShipMovement>().transform;
         rb = GetComponent<Rigidbody>();
 
         LaunchProjectile();
@@ -21,13 +21,14 @@ public class Projectile : MonoBehaviour
 
     private void LaunchProjectile()
     {
-        Vector3 directionToPlayer = player.position - transform.position.normalized;
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
         rb.velocity = directionToPlayer * speed;
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator DestroyProjectile()
     {
-        
+        float destroyTime = 5f;
+        yield return new WaitForSeconds(destroyTime);
+        Destroy(gameObject);
     }
 }
