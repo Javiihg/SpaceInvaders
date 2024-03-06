@@ -17,6 +17,8 @@ public class Projectile : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         LaunchProjectile();
+
+        StartCoroutine(DestroyProjectile());
     }
 
     private void LaunchProjectile()
@@ -27,7 +29,7 @@ public class Projectile : MonoBehaviour
 
     IEnumerator DestroyProjectile()
     {
-        float destroyTime = 5f;
+        float destroyTime = 3f;
         yield return new WaitForSeconds(destroyTime);
         Destroy(gameObject);
     }

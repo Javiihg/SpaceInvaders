@@ -10,11 +10,26 @@ public class ChangeCursor : MonoBehaviour
     private Vector2 cursorHotspot;
     private void OnMouseEnter()
     {
-        Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto);
+        SetCursor();
     }
 
     private void OnMouseExit()
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
+    private void OnDestroy()
+    {
+        SetDefaultCursor();
+    }
+
+    private void SetDefaultCursor()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
+    private void SetCursor()
+    {
+        Cursor.SetCursor(cursorTexture, cursorHotspot, CursorMode.Auto);
     }
 }
