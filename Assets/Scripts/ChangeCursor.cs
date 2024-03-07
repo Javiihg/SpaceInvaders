@@ -8,6 +8,7 @@ public class ChangeCursor : MonoBehaviour
     private Texture2D cursorTexture;
     [SerializeField]
     private Vector2 cursorHotspot;
+
     private void OnMouseEnter()
     {
         SetCursor();
