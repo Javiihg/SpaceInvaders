@@ -18,6 +18,11 @@ public class RayCasters : MonoBehaviour
     private bool isReload = false; 
     public TextMeshProUGUI shotsText;
 
+    void Start()
+    {
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R) && !isReload) 
@@ -76,16 +81,20 @@ public class RayCasters : MonoBehaviour
 
     IEnumerator StartCooldown()
     {
+        shotsText.text = "Recargando";
+        yield return new WaitForSeconds(cooldown);
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
         isReload = true; 
         yield return new WaitForSeconds(cooldown);
         isReload = false; 
     }
 
     IEnumerator RestartCooldown()
-    {
-        isReload = true; 
-        shotsCount = 0;
-        yield return new WaitForSeconds(1f);
-        isReload = false; 
-    }
+{
+
+    isReload = true; 
+    shotsCount = 0;
+    yield return new WaitForSeconds(1f);
+    isReload = false; 
+}
 }
