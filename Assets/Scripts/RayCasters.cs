@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 //Script donde se añade raycast para mantener el puntero de disparo, añadiendo un prefab cómo bala y y manteniendo un intervalo de balas cada medio segundo.
@@ -15,6 +16,7 @@ public class RayCasters : MonoBehaviour
     private bool canShoot = true;
     private int shotsCount = 0;
     private bool isReload = false; 
+    public TextMeshProUGUI shotsText;
 
     void Update()
     {
@@ -28,6 +30,8 @@ public class RayCasters : MonoBehaviour
             ShootProjectile();
             StartCoroutine(ShootCooldown());
         }
+
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
     }
 
     void ShootProjectile()
