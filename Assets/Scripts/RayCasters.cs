@@ -1,40 +1,100 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
+//Script donde se añade raycast para mantener el puntero de disparo, añadiendo un prefab cómo bala y y manteniendo un intervalo de balas cada medio segundo.
 public class RayCasters : MonoBehaviour
 {
-    private bool isMouseClicked = false;
-    public void Update()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-        if (isMouseClicked || Input.GetMouseButton(0))
-        {
-            Debug.DrawRay(ray.origin, ray.direction * 10000, Color.cyan);
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+    public float projectileSpeed = 10f;
+    public float shootingInterval = 0.5f;
+    public int shotsBeforePumpum = 15;
+    public float cooldown = 2f;
 
+    private bool canShoot = true;
+    private int shotsCount = 0;
+    private bool isReload = false; 
+    public TextMeshProUGUI shotsText;
+
+    void Start()
+    {
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && !isReload) 
+        {
+            StartCoroutine(RestartCooldown());
         }
 
-         RaycastHit hit;
+        if (Input.GetMouseButtonDown(0) && canShoot && !isReload) 
+        {
+            ShootProjectile();
+            StartCoroutine(ShootCooldown());
+        }
 
-         if(Input.GetMouseButton(0))
-         {
-            if(Physics.Raycast(ray, out hit))
-            {
-                Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.red);
-                Debug.Log("El rayo toca con " + hit.transform.gameObject.tag);
-
-                if (hit.transform.GetComponent<ChangeCursor>() != null)
-                {
-                    Destroy(hit.transform.gameObject);
-                }
-            }
-
-            isMouseClicked = true;
-         }
-         else if (Input.GetMouseButtonUp(0))
-         {
-            isMouseClicked = false;
-         }
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
     }
+
+    void ShootProjectile()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (projectilePrefab != null && firePoint != null)
+        {
+            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+            Rigidbody projectileRigidbody = projectile.GetComponent<Rigidbody>();
+
+            if (projectileRigidbody != null)
+            {
+                Vector3 direction = ray.origin - firePoint.position;
+                projectileRigidbody.velocity = direction.normalized * projectileSpeed;
+            }
+        }
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.transform.GetComponent<ChangeCursor>() != null)
+            {
+                Destroy(hit.transform.gameObject);
+            }
+        }
+
+        shotsCount++;
+        if (shotsCount >= shotsBeforePumpum)
+        {
+            StartCoroutine(StartCooldown());
+            shotsCount = 0;
+        }
+    }
+
+    IEnumerator ShootCooldown()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(shootingInterval);
+        canShoot = true;
+    }
+
+    IEnumerator StartCooldown()
+    {
+        shotsText.text = "Recargando";
+        yield return new WaitForSeconds(cooldown);
+        shotsText.text = "Balas: " + (shotsBeforePumpum -  shotsCount);
+        isReload = true; 
+        yield return new WaitForSeconds(cooldown);
+        isReload = false; 
+    }
+
+    IEnumerator RestartCooldown()
+{
+
+    isReload = true; 
+    shotsCount = 0;
+    yield return new WaitForSeconds(1f);
+    isReload = false; 
+}
 }
